@@ -1,0 +1,14 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Parameters:
+  DomainName:
+    Type: String
+    Default: example.net
+Resources:
+  DNS:
+    Type: "AWS::Route53::HostedZone"
+    Properties:
+      Name: !Ref DomainName
+      HostedZoneConfig:
+        Comment: !Join
+          - " "
+          - ["My hosted zone for", !Ref DomainName]
