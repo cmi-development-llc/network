@@ -95,6 +95,30 @@ Resources:
       SecurityGroupIds:
         - Ref: InstanceSecurityGroup
       SubnetId: !Ref Subnet1
+      UserData:
+        Fn::Base64: !Sub |
+           amazon-linux-extras install -y lamp-mariadb10.2-php7.2 php7.2
+           yum install -y httpd mariadb-server
+           systemctl start httpd
+           systemctl enable httpd
+           usermod -a -G apache ec2-user
+           chown -R ec2-user:apache /var/www
+           chmod 2775 /var/www && find /var/www -type d -exec  chmod 2775 {} \;
+           /var/www -type f -exec  chmod 0664 {} \;
+           systemctl start mariadb
+           systemctl enable mariadb
+           yum -y install gcc libstdc++-devel gcc-c++ fuse fuse-devel curl-devel libxml2-devel mailcap git automake make
+           yum -y install openssl-devel # See (*2)
+           cd ~
+           git clone https://github.com/s3fs-fuse/s3fs-fuse
+           cd s3fs-fuse/
+           ./autogen.sh
+           export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+           ./configure --prefix=/usr --with-openssl # See (*1)
+           make
+           make install
+           /usr/bin/s3fs cmidevelopment.llc /var/www/html_static -o use_path_request_style,iam_role,allow_other
+
   AppLBGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -125,3 +149,4 @@ Resources:
         SourceSecurityGroupId:
           Ref: AppLBGroup
       VpcId: !Ref VpcId
+      
