@@ -119,10 +119,10 @@ Resources:
       HostedZoneName: !Join ['', [!Ref 'DomainName', .]]
       RecordSets:
         - Name: !Join ['', ['www.', !Ref 'FullDomainName', .]]
-          Type: A
-          AliasTarget:
-            HostedZoneId: !FindInMap [RegionMap, !Ref "AWS::Region", S3HostedZoneId]
-            DNSName: !GetAtt [WebsiteRedirectBucket, DomainName]
+          Type: CNAME
+          TTL: 60
+          ResourceRecords:
+            - !GetAtt [WebsiteRedirectBucket, DomainName]
 Outputs:
   BucketName:
     Value: !Ref 'WebsiteBucket'
