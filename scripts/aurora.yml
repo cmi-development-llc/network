@@ -1,0 +1,77 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: serverless auroroa db
+Parameters:
+  Subnet1:
+    Type: String
+  Subnet2:
+    Type: String
+  SecurityGroupId:
+    Type: String
+  DatabaseName:
+    Type: String
+    Default: 'test'
+  VpcId:
+    Type: String
+Resources:
+  InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable SSH access via port 22
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '3306'
+          ToPort: '3306'
+          SourceSecurityGroupId:
+            Ref: SecurityGroupId
+      VpcId: !Ref VpcId
+  MyRDSSecret:
+    Type: "AWS::SecretsManager::Secret"
+    Properties:
+      Description: "This is a Secrets Manager secret for an RDS DB instance"
+      GenerateSecretString:
+        SecretStringTemplate: '{"username": "admin"}'
+        GenerateStringKey: "password"
+        PasswordLength: 16
+        ExcludeCharacters: '"@/\'
+  myKey:
+    Type: AWS::KMS::Key
+    Properties:
+      KeyPolicy:
+        Version: 2012-10-17
+        Id: key-default-1
+        Statement:
+          - Sid: Enable IAM User Permissions
+            Effect: Allow
+            Principal:
+              AWS: "*"
+            Action: 'kms:*'
+            Resource: '*'
+  DBSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: "db subnetgroup"
+      SubnetIds:
+        - !Ref Subnet1
+        - !Ref Subnet2
+  DBCluster:
+    Type: AWS::RDS::DBCluster
+    Properties:
+      DBSubnetGroupName: !Ref DBSubnetGroup
+      Engine: "aurora"
+      DatabaseName: !Ref DatabaseName
+      MasterUsername: !Join ['', ['{{resolve:secretsmanager:', !Ref MyRDSSecret, ':SecretString:username}}' ]]
+      MasterUserPassword: !Join ['', ['{{resolve:secretsmanager:', !Ref MyRDSSecret, ':SecretString:password}}' ]]
+      EngineMode: serverless
+      VpcSecurityGroupIds:
+        - !Ref InstanceSecurityGroup
+Outputs:
+  StackName:
+    Value: !Ref AWS::StackName
+  DatabaseEndpoint:
+    Value: !GetAtt "DBCluster.Endpoint.Address"
+  DatabasePort:
+    Value: !GetAtt "DBCluster.Endpoint.Port"
+  DatabaseCredentialsSecret:
+    Value: !Ref MyRDSSecret
+  DatabaseName:
+    Value: !Ref DatabaseName

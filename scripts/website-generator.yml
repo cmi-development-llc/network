@@ -2,6 +2,8 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: Creates an S3 bucket configured for hosting a static website, and a Route
   53 DNS record pointing to the bucket
 Parameters:
+  S3Bucket:
+    Type: String
   DomainName:
     Type: String
     Description: The DNS name of an existing Amazon Route 53 hosted zone e.g. jevsejev.io
@@ -43,6 +45,20 @@ Parameters:
     Default: 0.0.0.0/0
     AllowedPattern: (\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{1,2})
     ConstraintDescription: must be a valid IP CIDR range of the form x.x.x.x/x.
+  DBHost:
+    Type: String
+  DBName:
+    Type: String
+  DBPass:
+    Type: String
+  DBUser:
+    Type: String
+  AdminUser:
+    Type: String
+  BlogTitle:
+    Type: String
+  AdminEmail:
+    Type: String
 Resources:
   WebsiteDNSName:
     Type: AWS::Route53::RecordSetGroup
@@ -52,9 +68,9 @@ Resources:
         - Name: !Ref 'FullDomainName'
           Type: A
           AliasTarget:
-            HostedZoneId: !GetAtt AppFirewall.CanonicalHostedZoneID
-            DNSName: !GetAtt AppFirewall.DNSName
-  AppFirewall:
+            HostedZoneId: !GetAtt AppLoadBalancer.CanonicalHostedZoneID
+            DNSName: !GetAtt AppLoadBalancer.DNSName
+  AppLoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
       SecurityGroups:
@@ -62,61 +78,37 @@ Resources:
       Subnets:
         - !Ref Subnet1
         - !Ref Subnet2
+
       Type: application
-  AppTargetGroup:
+  TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
       Port: 80
       Protocol: HTTP
       TargetType: instance
       VpcId: !Ref VpcId
-  AppListener:
+      HealthCheckIntervalSeconds: 6
+      HealthCheckTimeoutSeconds: 5
+  AppListener443:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
       Certificates:
         - CertificateArn: !Ref AcmCertificateArn
       DefaultActions:
         - Type: forward
-          TargetGroupArn: !Ref AppTargetGroup
-      LoadBalancerArn: !Ref AppFirewall
+          TargetGroupArn: !Ref TargetGroup
+      LoadBalancerArn: !Ref AppLoadBalancer
       Port: 443
       Protocol: HTTPS
-#  EC2Instance:
-#    Type: AWS::EC2::Instance
-#    Properties:
-#      InstanceType:
-#        Ref: InstanceType
-#      KeyName:
-#        Ref: KeyName
-#      ImageId:
-#        Ref: InstanceAMI
-#      SecurityGroupIds:
-#        - Ref: InstanceSecurityGroup
-#      SubnetId: !Ref Subnet1
-#      UserData:
-#        Fn::Base64: !Sub |
-#           amazon-linux-extras install -y lamp-mariadb10.2-php7.2 php7.2
-#           yum install -y httpd mariadb-server
-#           systemctl start httpd
-#           systemctl enable httpd
-#           usermod -a -G apache ec2-user
-#           chown -R ec2-user:apache /var/www
-#           chmod 2775 /var/www && find /var/www -type d -exec  chmod 2775 {} \;
-#           /var/www -type f -exec  chmod 0664 {} \;
-#           systemctl start mariadb
-#           systemctl enable mariadb
-#           yum -y install gcc libstdc++-devel gcc-c++ fuse fuse-devel curl-devel libxml2-devel mailcap git automake make
-#           yum -y install openssl-devel # See (*2)
-#           cd ~
-#           git clone https://github.com/s3fs-fuse/s3fs-fuse
-#           cd s3fs-fuse/
-#           ./autogen.sh
-#           export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
-#           ./configure --prefix=/usr --with-openssl # See (*1)
-#           make
-#           make install
-#           /usr/bin/s3fs cmidevelopment.llc /var/www/html_static -o use_path_request_style,iam_role,allow_other
-#
+  AppListener80:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroup
+      LoadBalancerArn: !Ref AppLoadBalancer
+      Port: 80
+      Protocol: HTTP
   AppLBGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -136,27 +128,75 @@ Resources:
     Properties:
       GroupDescription: Enable SSH access via port 22
       SecurityGroupIngress:
-      - IpProtocol: tcp
-        FromPort: '22'
-        ToPort: '22'
-        CidrIp:
-          Ref: SSHLocation
-      - IpProtocol: tcp
-        FromPort: '80'
-        ToPort: '80'
-        SourceSecurityGroupId:
-          Ref: AppLBGroup
+        - IpProtocol: tcp
+          FromPort: '22'
+          ToPort: '22'
+          CidrIp:
+            Ref: SSHLocation
+        - IpProtocol: tcp
+          FromPort: '80'
+          ToPort: '80'
+          SourceSecurityGroupId:
+            Ref: AppLBGroup
       VpcId: !Ref VpcId
   LaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
-    UpdatePolicy:
-      AutoScalingRollingUpdate:
-        MaxBatchSize: 1
-        MinInstancesInService: 0
-        MinSuccessfulInstancesPercent: 100
-        PauseTime: PT5M
-        WaitOnResourceSignals: true
+    Metadata:
+      'AWS::CloudFormation::Init':
+        configSets:
+          All:
+            - ConfigureSampleApp
+        ConfigureSampleApp:
+          files:
+            /var/www/html/phpinfo.php:
+              content: !Join
+                - |+
+                - - <?php phpinfo(); ?>
+              mode: '000644'
+              owner: root
+              group: root
+            /var/www/html/wp-cli.yml:
+              content: |
+                apache_modules:
+                  - mod_rewrite
+              mode: '000644'
+              owner: root
+              group: root
+            /var/www/html/.htaccess:
+              content: |
+                # BEGIN WordPress
+                <IfModule mod_rewrite.c>
+                RewriteEngine On
+                RewriteBase /
+                RewriteRule ^index\.php$ - [L]
+                RewriteCond %{REQUEST_FILENAME} !-f
+                RewriteCond %{REQUEST_FILENAME} !-d
+                RewriteRule . /index.php [L]
+                </IfModule>
+                # END WordPress
+              mode: '000644'
+              owner: root
+              group: root
+            /var/www/html/salts.php:
+              content: |
+                if($_SERVER['HTTP_X_FORWARDED_PROTO'] && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https'){
+                    $_SERVER['HTTPS'] = 'on';
+                    $_SERVER['SERVER_PORT'] = 443;
+                }
+                //define('FORCE_SSL_ADMIN', true);
+                define('AUTH_KEY',         ',Ah~6^oi4P9S_X!8PG7?b{$JIb*KY-Go9~^*zRIc(DA0!PXU7xXKsdd:/E?qrU_Z');
+                define('SECURE_AUTH_KEY',  '>Oy.LfN03ytR@1@E.JV7KTiYe@9;v,(Z_Cm#O+_0W_<dkUIQU[tVXq/QuNy,~<82');
+                define('LOGGED_IN_KEY',    '2cwnNko{OU9t7]PF2++H]mSJv8fwo Op)~GilpB~.4*1x<sfrmzCr[-Pp&6Sx=Lr');
+                define('NONCE_KEY',        'Aw1|gP8vx!8w/(i*-5q-=+QPFS^;A|I+&joGpS}B:)zOB~{I^zuupfB_kW 7r9Wy');
+                define('AUTH_SALT',        '*OgZkZ,Wn|&-c@t;1[p<(G*FkC5.-Q<AaYX}4B{BKgN~r8BGVXLa$tw.0&gS;h,a');
+                define('SECURE_AUTH_SALT', 'Ciy/+xNE)1MAI#CG@Gt7O3>f,jXx6=19^K5;^#H&aK+z>po(CPf#8~];3MEL+:uv');
+                define('LOGGED_IN_SALT',   'J=`?kW3iC#kQAOY-X~L2a2L?vn{*M0_4=D_#q&m,e-:AT1Xev0J5&R78X7ck0alE');
+                define('NONCE_SALT',       '>R3YG/R|PD2W^#a7Lo`Kz:m9BX -o^?;mee)tYeTFuVYz.%yx0R@7)c9?8e1-P+-');
+              mode: '000644'
+              owner: root
+              group: root
     Properties:
+      IamInstanceProfile: !Ref ListS3BucketsInstanceProfile
       SecurityGroups:
         - !Ref InstanceSecurityGroup
       InstanceType:
@@ -166,44 +206,148 @@ Resources:
       ImageId:
         Ref: InstanceAMI
       UserData:
-        Fn::Base64: !Sub |
-          #!/bin/bash -xe
+        Fn::Base64:
+          Fn::Join:
+            - "\n"
+            - - !Sub |
+                #!/bin/bash -xe
 
-          yum install -y aws-cfn-bootstrap
-          amazon-linux-extras install -y lamp-mariadb10.2-php7.2 php7.2
-          yum install -y httpd mariadb-server
-          systemctl start httpd
-          systemctl enable httpd
-          usermod -a -G apache ec2-user
-          chown -R ec2-user:apache /var/www
-          chmod 2775 /var/www && find /var/www -type d -exec  chmod 2775 {} \;
-          find /var/www -type f -exec  chmod 0664 {} \;
-          systemctl start mariadb
-          systemctl enable mariadb
-          yum -y install gcc libstdc++-devel gcc-c++ fuse fuse-devel curl-devel libxml2-devel mailcap git automake make
-          yum -y install openssl-devel # See (*2)
-          cd ~
-          git clone https://github.com/s3fs-fuse/s3fs-fuse
-          cd s3fs-fuse/
-          ./autogen.sh
-          export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
-          ./configure --prefix=/usr --with-openssl # See (*1)
-          make
-          make install
-          mkdir /var/www/html_static
-          /usr/bin/s3fs cmidevelopment.llc /var/www/html_static -o use_path_request_style,iam_role,allow_other
-          /opt/aws/bin/cfn-init -v --stack ${AWS::StackId} --resource LaunchConfig --region ${AWS::Region}
-          /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackId} --resource WebServerGroup --region ${AWS::Region}
+                yum install -y aws-cfn-bootstrap
+              - Fn::Join:
+                  - ""
+                  - - |
+                      # Install the files and packages from the metadata
+                      # also set up all of the other cloudformation vars we depend on
+                    - '/opt/aws/bin/cfn-init -v '
+                    - '         --stack '
+                    - !Ref 'AWS::StackName'
+                    - '         --resource LaunchConfig '
+                    - '         --configsets All '
+                    - '         --region '
+                    - !Ref 'AWS::Region'
+              - !Sub |+
 
+                    amazon-linux-extras install -y lamp-mariadb10.2-php7.2 php7.2
+                    yum install -y httpd mysql
+                    systemctl start httpd
+                    systemctl enable httpd
+                    usermod -a -G apache ec2-user
+                    yum -y install gcc libstdc++-devel gcc-c++ fuse fuse-devel curl-devel libxml2-devel mailcap git automake make
+                    yum -y install openssl-devel # See (*2)
+                    cd ~
+                    git clone https://github.com/s3fs-fuse/s3fs-fuse
+                    cd s3fs-fuse/
+                    ./autogen.sh
+                    export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+                    ./configure --prefix=/usr --with-openssl # See (*1)
+                    make
+                    make install
+
+                    curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+                    chmod +x wp-cli.phar
+                    sudo mv wp-cli.phar /usr/local/bin/wp
+                    cd /var/www/html
+                    /usr/local/bin/wp core download --allow-root
+                    cat salts.php | /usr/local/bin/wp config create --allow-root --skip-salts --dbname=${DBName} --dbuser=${DBUser} --dbpass=${DBPass} --dbhost=${DBHost} --extra-php
+                    /usr/local/bin/wp plugin install header-and-footer-scripts-inserter --activate --allow-root
+                    /usr/local/bin/wp plugin install insert-html-snippet --activate --allow-root
+                    /usr/local/bin/wp plugin install simply-static --activate --allow-root
+                    /usr/local/bin/wp plugin install themeisle-companion --activate --allow-root
+                    /usr/local/bin/wp plugin delete hello --allow-root
+                    /usr/local/bin/wp plugin delete akismet --allow-root
+                    /usr/local/bin/wp theme delete twentysixteen --allow-root
+                    /usr/local/bin/wp theme delete twentyseventeen --allow-root
+                    /usr/local/bin/wp theme delete twentynineteen --allow-root
+                    /usr/local/bin/wp theme install hestia --activate --allow-root
+
+                    chown -R apache:apache /var/www
+                    chmod 775 /var/www && find /var/www -type d -exec chmod 775 {} \;
+                    find /var/www -type f -exec  chmod 0775 {} \;
+                    mkdir /var/www/html_static
+
+                    /usr/bin/s3fs ${S3Bucket} /var/www/html_static -o use_path_request_style,iam_role,allow_other,uid=0048,gid=0048
+                    mkdir /var/www/html/wp-content/uploads
+                    /usr/bin/s3fs ${DynamicS3Bucket} /var/www/html/wp-content/uploads -o use_path_request_style,iam_role,allow_other,uid=0048,gid=0048
+                    sed -i 's/AllowOverride None/AllowOverride All/g' /etc/httpd/conf/httpd.conf
+                    service httpd restart
+              - 'Fn::Join':
+                  - ''
+                  - - |
+                      # Signal the status from cfn-init
+                    - '/opt/aws/bin/cfn-signal -e $? '
+                    - '         --stack '
+                    - !Ref 'AWS::StackName'
+                    - '         --resource AutoScaling '
+                    - '         --region '
+                    - !Ref 'AWS::Region'
+                    - |+
+
+                      #
+  DynamicS3Bucket:
+    Type: AWS::S3::Bucket
+  ListS3BucketsInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: "/"
+      Roles:
+        - Ref: ListS3BucketsRole
+  ListS3BucketsPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: ListS3BucketsPolicy
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Action:
+              - s3:*
+            Resource: !Sub "arn:aws:s3:::${S3Bucket}/*"
+          - Effect: Allow
+            Action:
+              - s3:*
+            Resource: !Sub "arn:aws:s3:::${S3Bucket}"
+          - Effect: Allow
+            Action:
+              - s3:*
+            Resource: !Sub "arn:aws:s3:::${DynamicS3Bucket}/*"
+          - Effect: Allow
+            Action:
+              - s3:*
+            Resource: !Sub "arn:aws:s3:::${DynamicS3Bucket}"
+          - Effect: Allow
+            Action:
+              - ssm:*
+            Resource: "*"
+      Roles:
+        - Ref: ListS3BucketsRole
+  ListS3BucketsRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
   AutoScaling:
     Type: AWS::AutoScaling::AutoScalingGroup
+    UpdatePolicy:
+      AutoScalingRollingUpdate:
+        MaxBatchSize: 1
+        MinInstancesInService: 0
+        MinSuccessfulInstancesPercent: 100
+        PauseTime: PT5M
+        WaitOnResourceSignals: true
     Properties:
       LaunchConfigurationName: !Ref LaunchConfig
       MaxSize: 1
       MinSize: 0
       DesiredCapacity: 1
       TargetGroupARNs:
-      - !Ref AppTargetGroup
+        - !Ref TargetGroup
       VPCZoneIdentifier:
-      - !Ref Subnet1
-      - !Ref Subnet2
+        - !Ref Subnet1
+        - !Ref Subnet2

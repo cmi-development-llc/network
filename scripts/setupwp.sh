@@ -22,3 +22,7 @@ make
 sudo make install
 
  /usr/bin/s3fs cmidevelopment.llc /var/www/html_static -o use_path_request_style,iam_role,allow_other
+
+
+ zip -r filename.zip html
+ mysqldump -uroot wordpress > mysqlbackup.sql
