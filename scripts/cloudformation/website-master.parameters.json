@@ -1,0 +1,58 @@
+[
+  {
+    "ParameterKey": "FullDomainName",
+    "ParameterValue": "cmidevelopment.llc"
+  },
+  {
+    "ParameterKey": "SSHLocation",
+    "ParameterValue": "0.0.0.0/0"
+  },
+  {
+    "ParameterKey": "DomainName",
+    "ParameterValue": "cmidevelopment.llc"
+  },
+  {
+    "ParameterKey": "MainSiteAcmCertificateArn",
+    "ParameterValue": "arn:aws:acm:us-east-1:656599982687:certificate/acc5d9b5-6e9a-46cc-9a87-b09e3035cefe"
+  },
+  {
+    "ParameterKey": "EditDomainName",
+    "ParameterValue": "static.cmidevelopment.llc"
+  },
+  {
+    "ParameterKey": "DatabaseName",
+    "ParameterValue": "test"
+  },
+  {
+    "ParameterKey": "Subnet1",
+    "ParameterValue": "subnet-10f3662e"
+  },
+  {
+    "ParameterKey": "KeyName",
+    "ParameterValue": "cmidev"
+  },
+  {
+    "ParameterKey": "Subnet2",
+    "ParameterValue": "subnet-1bb8fe7c"
+  },
+  {
+    "ParameterKey": "VpcId",
+    "ParameterValue": "vpc-94a436ee"
+  },
+  {
+    "ParameterKey": "TemplateLocation",
+    "ParameterValue": "https://s3.us-east-2.amazonaws.com/cmidev"
+  },
+  {
+    "ParameterKey": "InstanceAMI",
+    "ParameterValue": "ami-0de53d8956e8dcf80"
+  },
+  {
+    "ParameterKey": "EditSiteAcmCertificateArn",
+    "ParameterValue": "arn:aws:acm:us-east-1:656599982687:certificate/38f24929-2ca9-4f71-8a40-f326c7db7d5f"
+  },
+  {
+    "ParameterKey": "InstanceType",
+    "ParameterValue": "t2.micro"
+  }
+]

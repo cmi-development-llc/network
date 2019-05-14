@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Parameters:
+  DomainName:
+    Type: String
+    Default: example.net
+  FullDomainName:
+    Type: String
+    Default: example.net
+  TargetDomainName:
+    Type: String
+    Default: example.net
+Resources:
+  DNSName:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneName: !Join ['', [!Ref 'DomainName', .]]
+      RecordSets:
+        - Name: !Join ['', ['www.', !Ref 'FullDomainName', .]]
+          Type: CNAME
+          TTL: 60
+          ResourceRecords:
+            - !Ref TargetDomainName
