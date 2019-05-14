@@ -1,24 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f325a377-d484-4e07-8180-65264a1b1b75" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/aws.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scripts/cloudformation/application-load-balancer-autoscaling-group.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scripts/cloudformation/bucket-redirect.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scripts/cloudformation/bucket-website.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scripts/cloudformation/cloudfront.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scripts/cloudformation/recordset-group-a-alias.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scripts/cloudformation/security-groups.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scripts/cloudformation/website-master.parameters.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scripts/cloudformation/website-master.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/scripts/upload-to-cfn.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/aurora.yml" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/cloudformation/aurora-serverless.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/hostedzone.yml" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/cloudformation/hostedzone.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/setupwp.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/website-generator.yml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/website.yml" beforeDir="false" />
-    </list>
+    <list default="true" id="f325a377-d484-4e07-8180-65264a1b1b75" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,8 +16,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/scripts/cloudformation/application-load-balancer-autoscaling-group.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="415">
-              <caret line="232" column="146" lean-forward="true" selection-start-line="232" selection-start-column="146" selection-end-line="232" selection-end-column="146" />
+            <state relative-caret-position="449">
+              <caret line="232" column="38" selection-start-line="232" selection-start-column="38" selection-end-line="232" selection-end-column="38" />
             </state>
           </provider>
         </entry>
@@ -220,12 +203,12 @@
       <workItem from="1557356296076" duration="714000" />
       <workItem from="1557357050834" duration="11002000" />
       <workItem from="1557499793520" duration="1029000" />
-      <workItem from="1557838607647" duration="11955000" />
+      <workItem from="1557838607647" duration="12430000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="79198000" />
+    <option name="totallyTimeSpent" value="79673000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-6" y="-6" width="1633" height="1053" extended-state="6" />
@@ -367,8 +350,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/scripts/cloudformation/application-load-balancer-autoscaling-group.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="415">
-          <caret line="232" column="146" lean-forward="true" selection-start-line="232" selection-start-column="146" selection-end-line="232" selection-end-column="146" />
+        <state relative-caret-position="449">
+          <caret line="232" column="38" selection-start-line="232" selection-start-column="38" selection-end-line="232" selection-end-column="38" />
         </state>
       </provider>
     </entry>
