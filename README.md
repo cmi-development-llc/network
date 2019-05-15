@@ -1,1 +1,1 @@
-[](Wordpress%20Static.png?raw=true)
+[](Wordpress-Static.png?raw=true)
