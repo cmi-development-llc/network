@@ -31,12 +31,6 @@ Parameters:
     Type: String
   DBName:
     Type: String
-  AdminUser:
-    Type: String
-  BlogTitle:
-    Type: String
-  AdminEmail:
-    Type: String
   InstanceSecurityGroup:
     Type: String
   SecretId:
@@ -211,17 +205,18 @@ Resources:
                 cd /var/www/html
                 /usr/local/bin/wp core download --allow-root
                 cat salts.php | /usr/local/bin/wp config create --allow-root --skip-salts --dbname=${DBName} --dbuser=$DatabaseUser --dbpass=$DatabasePassword --dbhost=${DBHost} --extra-php
-                /usr/local/bin/wp plugin install header-and-footer-scripts-inserter --activate --allow-root
-                /usr/local/bin/wp plugin install insert-html-snippet --activate --allow-root
-                /usr/local/bin/wp plugin install simply-static --activate --allow-root
-                /usr/local/bin/wp plugin install themeisle-companion --activate --allow-root
-                /usr/local/bin/wp theme install hestia --activate --allow-root
-                /usr/local/bin/wp plugin delete hello --allow-root
-                /usr/local/bin/wp plugin delete akismet --allow-root
-                /usr/local/bin/wp theme delete twentysixteen --allow-root
-                /usr/local/bin/wp theme delete twentyseventeen --allow-root
-                /usr/local/bin/wp theme delete twentynineteen --allow-root
-
+                if $(wp core is-installed --allow-root); then
+                    /usr/local/bin/wp plugin install header-and-footer-scripts-inserter --activate --allow-root
+                    /usr/local/bin/wp plugin install insert-html-snippet --activate --allow-root
+                    /usr/local/bin/wp plugin install simply-static --activate --allow-root
+                    /usr/local/bin/wp plugin install themeisle-companion --activate --allow-root
+                    /usr/local/bin/wp theme install hestia --activate --allow-root
+                    /usr/local/bin/wp plugin delete hello --allow-root
+                    /usr/local/bin/wp plugin delete akismet --allow-root
+                    /usr/local/bin/wp theme delete twentysixteen --allow-root
+                    /usr/local/bin/wp theme delete twentyseventeen --allow-root
+                    /usr/local/bin/wp theme delete twentynineteen --allow-root
+                fi
 
                 chown -R apache:apache /var/www
                 chmod 775 /var/www && find /var/www -type d -exec chmod 775 {} \;

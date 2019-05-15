@@ -1,4 +1,4 @@
-# Static Wordpress site generator
+# Static Wordpress Site Generator
 This is a set of cloudformation templates and a bash script that will help create a static wordpress ecosystem.
 
 # Architecure Diagram

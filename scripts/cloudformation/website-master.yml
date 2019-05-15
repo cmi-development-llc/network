@@ -110,9 +110,6 @@ Resources:
         InstanceAMI: !Ref InstanceAMI
         DBHost: !GetAtt Aurora.Outputs.DatabaseEndpoint
         DBName: !GetAtt Aurora.Outputs.DatabaseName
-        AdminUser: ""
-        BlogTitle: ""
-        AdminEmail: ""
         InstanceSecurityGroup: !GetAtt SecurityGroups.Outputs.InstanceSecurityGroup
         ApplicationLoadBalancerSecurityGroup: !GetAtt SecurityGroups.Outputs.LoadBalancerSecurityGroup
         SecretId: !GetAtt Aurora.Outputs.DatabaseCredentialsSecret
