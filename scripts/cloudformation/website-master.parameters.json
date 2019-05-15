@@ -21,7 +21,7 @@
   },
   {
     "ParameterKey": "DatabaseName",
-    "ParameterValue": "test"
+    "ParameterValue": "wordpress"
   },
   {
     "ParameterKey": "Subnet1",

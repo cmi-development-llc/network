@@ -86,7 +86,7 @@ Resources:
         Subnet1: !Ref Subnet1
         Subnet2: !Ref Subnet2
         SecurityGroupId: !GetAtt SecurityGroups.Outputs.InstanceSecurityGroup
-        DatabaseName: "wordpress"
+        DatabaseName: !Ref DatabaseName
         VpcId: !Ref VpcId
   SecurityGroups:
     Type: AWS::CloudFormation::Stack
