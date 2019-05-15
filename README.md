@@ -1,10 +1,10 @@
 # Static Wordpress site generator
 This is a set of cloudformation templates and a bash script that will help create a static wordpress ecosystem.
 
-#Architecure Diagram
+# Architecure Diagram
 ![](Wordpress-Static.png?raw=true)
 
-#Deployment
+# Deployment
 
 Configure your AWS credentials like so:
 ```bash
