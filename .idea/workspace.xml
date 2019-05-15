@@ -3,8 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="f325a377-d484-4e07-8180-65264a1b1b75" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/cloudformation/website-master.parameters.json" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/cloudformation/website-master.parameters.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/cloudformation/website-master.yml" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/cloudformation/website-master.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -17,20 +16,23 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/scripts/cloudformation/website-master.parameters.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="228">
-              <caret line="23" column="32" selection-start-line="23" selection-start-column="32" selection-end-line="23" selection-end-column="32" />
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/README.md">
+          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+            <state split_layout="SPLIT">
+              <first_editor relative-caret-position="255">
+                <caret line="14" column="7" lean-forward="true" selection-start-line="14" selection-start-column="7" selection-end-line="14" selection-end-column="7" />
+              </first_editor>
+              <second_editor />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/scripts/cloudformation/website-master.yml">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/scripts/upload-to-cfn.sh">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="88" column="39" selection-start-line="88" selection-start-column="39" selection-end-line="88" selection-end-column="39" />
+            <state relative-caret-position="119">
+              <caret line="7" column="14" lean-forward="true" selection-start-line="7" selection-start-column="14" selection-end-line="7" selection-end-column="14" />
             </state>
           </provider>
         </entry>
@@ -102,12 +104,12 @@
         <option value="$PROJECT_DIR$/scripts/launchconfig-wordpress-generator.yml" />
         <option value="$PROJECT_DIR$/scripts/application-load-balancer-autoscaling-group.yml" />
         <option value="$PROJECT_DIR$/scripts/website-master.yml" />
-        <option value="$PROJECT_DIR$/scripts/upload-to-cfn.sh" />
         <option value="$PROJECT_DIR$/scripts/cloudformation/launchconfig-wordpress-generator.yml" />
         <option value="$PROJECT_DIR$/scripts/cloudformation/application-load-balancer-autoscaling-group.yml" />
-        <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/scripts/cloudformation/website-master.parameters.json" />
         <option value="$PROJECT_DIR$/scripts/cloudformation/website-master.yml" />
+        <option value="$PROJECT_DIR$/scripts/upload-to-cfn.sh" />
+        <option value="$PROJECT_DIR$/README.md" />
       </list>
     </option>
   </component>
@@ -201,18 +203,19 @@
       <workItem from="1557357050834" duration="11002000" />
       <workItem from="1557499793520" duration="1029000" />
       <workItem from="1557838607647" duration="12430000" />
-      <workItem from="1557876508774" duration="1467000" />
+      <workItem from="1557876508774" duration="1655000" />
+      <workItem from="1557880973029" duration="1637000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="81140000" />
+    <option name="totallyTimeSpent" value="82965000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-6" y="-6" width="1633" height="1053" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.45234248" visible="true" weight="0.18666667" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.45234248" visible="true" weight="0.18920635" />
       <window_info x="67" y="336" width="542" height="337" id="aws.explorer" order="1" sideWeight="0.5476575" side_tool="true" weight="0.34412697" />
       <window_info id="Structure" order="2" side_tool="true" weight="0.25" />
       <window_info id="Capture Tool" order="3" />
@@ -305,13 +308,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/scripts/upload-to-cfn.sh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="7" column="14" lean-forward="true" selection-start-line="7" selection-start-column="14" selection-end-line="7" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/.aws/credentials">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -336,20 +332,10 @@
     <entry file="file://$PROJECT_DIR$/Wordpress Static.xml">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor>
-            <caret column="34" selection-start-column="34" selection-end-column="34" />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/scripts/cloudformation/website-master.parameters.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="228">
-          <caret line="23" column="32" selection-start-line="23" selection-start-column="32" selection-end-line="23" selection-end-column="32" />
+          <caret line="23" column="32" selection-start-line="23" selection-start-column="22" selection-end-line="23" selection-end-column="33" />
         </state>
       </provider>
     </entry>
@@ -357,6 +343,23 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="180">
           <caret line="88" column="39" selection-start-line="88" selection-start-column="39" selection-end-line="88" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/scripts/upload-to-cfn.sh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="14" lean-forward="true" selection-start-line="7" selection-start-column="14" selection-end-line="7" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="255">
+            <caret line="14" column="7" lean-forward="true" selection-start-line="14" selection-start-column="7" selection-end-line="14" selection-end-column="7" />
+          </first_editor>
+          <second_editor />
         </state>
       </provider>
     </entry>
