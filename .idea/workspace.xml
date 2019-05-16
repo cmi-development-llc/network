@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f325a377-d484-4e07-8180-65264a1b1b75" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/cloudformation/application-load-balancer-autoscaling-group.yml" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/cloudformation/application-load-balancer-autoscaling-group.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/cloudformation/website-master.yml" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/cloudformation/website-master.yml" afterDir="false" />
-    </list>
+    <list default="true" id="f325a377-d484-4e07-8180-65264a1b1b75" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -29,7 +25,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/scripts/cloudformation/website-master.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="571">
+            <state relative-caret-position="1887">
               <caret line="111" column="51" selection-start-line="111" selection-start-column="51" selection-end-line="111" selection-end-column="51" />
             </state>
           </provider>
@@ -38,8 +34,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/scripts/cloudformation/website-master.parameters.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="273">
-              <caret line="29" column="3" lean-forward="true" selection-start-line="29" selection-start-column="3" selection-end-line="29" selection-end-column="3" />
+            <state relative-caret-position="477">
+              <caret line="41" column="3" lean-forward="true" selection-start-line="41" selection-start-column="3" selection-end-line="41" selection-end-column="3" />
             </state>
           </provider>
         </entry>
@@ -213,11 +209,12 @@
       <workItem from="1557876508774" duration="1655000" />
       <workItem from="1557880973029" duration="2677000" />
       <workItem from="1557921918107" duration="3399000" />
+      <workItem from="1557940496917" duration="1172000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="87404000" />
+    <option name="totallyTimeSpent" value="88576000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="805" y="0" width="821" height="1046" extended-state="0" />
@@ -390,15 +387,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/scripts/cloudformation/website-master.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="571">
+        <state relative-caret-position="1887">
           <caret line="111" column="51" selection-start-line="111" selection-start-column="51" selection-end-line="111" selection-end-column="51" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/scripts/cloudformation/website-master.parameters.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="273">
-          <caret line="29" column="3" lean-forward="true" selection-start-line="29" selection-start-column="3" selection-end-line="29" selection-end-column="3" />
+        <state relative-caret-position="477">
+          <caret line="41" column="3" lean-forward="true" selection-start-line="41" selection-start-column="3" selection-end-line="41" selection-end-column="3" />
         </state>
       </provider>
     </entry>
