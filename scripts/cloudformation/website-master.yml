@@ -40,23 +40,25 @@ Parameters:
     Type: String
     Default: t2.micro
     ConstraintDescription: must be a valid EC2 instance type.
+  ConfigS3Bucket:
+    Type: String
 Resources:
   WebsiteBucket:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: !Sub "${TemplateLocation}/bucket-website.yml"
+      TemplateURL: !Sub "${TemplateLocation}/cloudformation/bucket-website.yml"
       Parameters:
         FullDomainName: !Ref FullDomainName
   WebsiteRedirectBucket:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: !Sub "${TemplateLocation}/bucket-redirect.yml"
+      TemplateURL: !Sub "${TemplateLocation}/cloudformation/bucket-redirect.yml"
       Parameters:
         FullDomainName: !Ref FullDomainName
   WebsiteCloudfront:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: !Sub "${TemplateLocation}/cloudfront.yml"
+      TemplateURL: !Sub "${TemplateLocation}/cloudformation/cloudfront.yml"
       Parameters:
         FullDomainName: !Ref FullDomainName
         AcmCertificateArn: !Ref MainSiteAcmCertificateArn
@@ -64,7 +66,7 @@ Resources:
   MainSiteARecord:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: !Sub "${TemplateLocation}/recordset-group-a-alias.yml"
+      TemplateURL: !Sub "${TemplateLocation}/cloudformation/recordset-group-a-alias.yml"
       Parameters:
         DomainName: !Ref DomainName
         FullDomainName: !Ref FullDomainName
@@ -73,7 +75,7 @@ Resources:
   MainSiteWWWCname:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: !Sub "${TemplateLocation}/recordset-group-cname.yml"
+      TemplateURL: !Sub "${TemplateLocation}/cloudformation/recordset-group-cname.yml"
       Parameters:
         DomainName: !Ref DomainName
         FullDomainName: !Ref FullDomainName
@@ -81,7 +83,7 @@ Resources:
   Aurora:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: !Sub "${TemplateLocation}/aurora-serverless.yml"
+      TemplateURL: !Sub "${TemplateLocation}/cloudformation/aurora-serverless.yml"
       Parameters:
         Subnet1: !Ref Subnet1
         Subnet2: !Ref Subnet2
@@ -91,14 +93,14 @@ Resources:
   SecurityGroups:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: !Sub "${TemplateLocation}/security-groups.yml"
+      TemplateURL: !Sub "${TemplateLocation}/cloudformation/security-groups.yml"
       Parameters:
         SSHLocation: !Ref SSHLocation
         VpcId: !Ref VpcId
   ApplicationLoadBalancerAutoScaling:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: !Sub "${TemplateLocation}/application-load-balancer-autoscaling-group.yml"
+      TemplateURL: !Sub "${TemplateLocation}/cloudformation/application-load-balancer-autoscaling-group.yml"
       Parameters:
         AcmCertificateArn: !Ref EditSiteAcmCertificateArn
         VpcId: !Ref VpcId
@@ -113,10 +115,11 @@ Resources:
         InstanceSecurityGroup: !GetAtt SecurityGroups.Outputs.InstanceSecurityGroup
         ApplicationLoadBalancerSecurityGroup: !GetAtt SecurityGroups.Outputs.LoadBalancerSecurityGroup
         SecretId: !GetAtt Aurora.Outputs.DatabaseCredentialsSecret
+        ConfigS3Bucket: !Ref ConfigS3Bucket
   EditSiteARecord:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: !Sub "${TemplateLocation}/recordset-group-a-alias.yml"
+      TemplateURL: !Sub "${TemplateLocation}/cloudformation/recordset-group-a-alias.yml"
       Parameters:
         DomainName: !Ref DomainName
         FullDomainName: !Ref EditDomainName

@@ -14,6 +14,8 @@ Parameters:
     Type: String
   S3Bucket:
     Type: String
+  ConfigS3Bucket:
+    Type: String
   KeyName:
     Description: Name of an existing EC2 KeyPair to enable SSH access to the instance
     Type: AWS::EC2::KeyPair::KeyName
@@ -206,11 +208,21 @@ Resources:
                 /usr/local/bin/wp core download --allow-root
                 cat salts.php | /usr/local/bin/wp config create --allow-root --skip-salts --dbname=${DBName} --dbuser=$DatabaseUser --dbpass=$DatabasePassword --dbhost=${DBHost} --extra-php
                 if $(wp core is-installed --allow-root); then
-                    /usr/local/bin/wp plugin install header-and-footer-scripts-inserter --activate --allow-root
-                    /usr/local/bin/wp plugin install insert-html-snippet --activate --allow-root
-                    /usr/local/bin/wp plugin install simply-static --activate --allow-root
-                    /usr/local/bin/wp plugin install themeisle-companion --activate --allow-root
-                    /usr/local/bin/wp theme install hestia --activate --allow-root
+                    # load file from s3 bucket
+                    aws s3 cp s3://${ConfigS3Bucket}/plugins .
+                    aws s3 cp s3://${ConfigS3Bucket}/themes .
+                    while read p; do
+                      /usr/local/bin/wp plugin install $p --activate --allow-root
+                    done <plugins
+                    while read p; do
+                       /usr/local/bin/wp theme install $p --activate --allow-root
+                     done <themes
+                    #/usr/local/bin/wp plugin install header-and-footer-scripts-inserter --activate --allow-root
+                    #/usr/local/bin/wp plugin install insert-html-snippet --activate --allow-root
+                    #/usr/local/bin/wp plugin install simply-static --activate --allow-root
+                    #/usr/local/bin/wp plugin install themeisle-companion --activate --allow-root
+                    #/usr/local/bin/wp theme install hestia --activate --allow-root
+
                     /usr/local/bin/wp plugin delete hello --allow-root
                     /usr/local/bin/wp plugin delete akismet --allow-root
                     /usr/local/bin/wp theme delete twentysixteen --allow-root
@@ -244,6 +256,14 @@ Resources:
       PolicyName: WebsiteGeneratorInstanceProfilePolicy
       PolicyDocument:
         Statement:
+          - Effect: Allow
+            Action:
+              - s3:*
+            Resource: !Sub "arn:aws:s3:::${ConfigS3Bucket}/*"
+          - Effect: Allow
+            Action:
+              - s3:*
+            Resource: !Sub "arn:aws:s3:::${ConfigS3Bucket}"
           - Effect: Allow
             Action:
               - s3:*

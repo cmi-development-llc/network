@@ -54,5 +54,9 @@
   {
     "ParameterKey": "InstanceType",
     "ParameterValue": "t2.micro"
+  },
+  {
+    "ParameterKey": "ConfigS3Bucket",
+    "ParameterValue": "cmidev"
   }
 ]
